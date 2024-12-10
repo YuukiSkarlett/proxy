@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  proxy:
+    build: ./proxy
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+      - statistics-service
+    networks:
+      - meli-network
+
+  statistics-service:
+    build: ./statistics
+    ports:
+      - "8081:8081"
+    networks:
+      - meli-network
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - meli-network
+
+networks:
+  meli-network:
+    driver: bridge 

@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: proxy
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    gateway:
+#      routes:
+#        - id: proxy_to_ml
+#          uri: https://api.mercadolibre.com
+#          predicates:
+#            - Path=/api/**
+#          filters:
+#            - name: RequestRateLimiter
+#              args:
+#                rate-limiter: "#{@redisRateLimiter}"
+#                key-resolver: "#{@customKeyResolver}"
+      rate-limiter:
+        ip:
+          replenish-rate: 1000
+          burst-capacity: 2000
+          requested-tokens: 1
+        path:
+          replenish-rate: 500
+          burst-capacity: 1000
+          requested-tokens: 1
+        ip-path:
+          replenish-rate: 100
+          burst-capacity: 200
+          requested-tokens: 1
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      repositories:
+        enabled: true
+statistics:
+  service:
+    url: http://statistics-service:8081
+logging:
+  level:
+    com.mercadolibre.proxy.client: DEBUG
+    org.springframework.cloud.gateway.filter.ratelimit: DEBUG
+app:
+  features:
+    stats-enabled: false
